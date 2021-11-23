@@ -1,5 +1,6 @@
 package com.pluralsight.candycoded;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -61,14 +63,14 @@ public class MainActivity extends AppCompatActivity {
           @Override
           public void onSuccess(int statusCode, Header[] headers, String response) {
             Log.d("AsyncHttpClient", "response = " + response);
-            Gson gson = new GsonBuilder().create();;
+            Gson gson = new GsonBuilder().create();
             candies = gson.fromJson(response, Candy[].class);
 
             addCandiesToDatabase(candies);
 
             SQLiteDatabase db = candyDbHelper.getWritableDatabase();
             Cursor cursor = db.rawQuery("SELECT * FROM candy", null);
-            //adapter.changeCursor(cursor);
+            adapter.changeCursor(cursor);
           }
         });
   }
@@ -95,5 +97,12 @@ public class MainActivity extends AppCompatActivity {
 
       db.insert(CandyContract.CandyEntry.TABLE_NAME, null, values);
     }
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    Intent infoIntent = new Intent(this, InfoActivity.class);
+    startActivity(infoIntent);
+    return super.onOptionsItemSelected(item);
   }
 }
